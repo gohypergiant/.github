@@ -1,0 +1,12 @@
+{
+    "name": "Cloud Defense Node.js",
+    "description": "Cloud Defense scan for Node.js",
+    "iconName": "cloud-defense",
+    "categories": [
+        "JavaScript"
+    ],
+    "filePatterns": [
+        "package.json$",
+        ".*\\.js$"
+    ]
+}
