@@ -1,0 +1,11 @@
+{
+    "name": "Cloud Defense Python",
+    "description": "Cloud Defense scan for Python Code",
+    "iconName": "cloud-defense",
+    "categories": [
+        "Python"
+    ],
+    "filePatterns": [
+        ".*\\.py$"
+    ]
+}
