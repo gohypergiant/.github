@@ -1,0 +1,11 @@
+{
+    "name": "Cloud Defense Golang",
+    "description": "Cloud Defense scan for Golang code",
+    "iconName": "cloud-defense",
+    "categories": [
+        "Golang"
+    ],
+    "filePatterns": [
+        ".*\\.go$"
+    ]
+}
