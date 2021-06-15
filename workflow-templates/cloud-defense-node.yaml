@@ -1,7 +1,7 @@
 name: Cloud Defense Node.js
 
 on:
-  push:
+  pull_request:
 
 jobs:
   build:
