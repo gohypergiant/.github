@@ -24,9 +24,9 @@ jobs:
       -
         name: Docker meta
         id: meta
-        uses: crazy-max/ghaction-docker-meta@v2
+        uses: docker/metadata-action@v3
         with:
-          images: dkr.fraq.dev/bytebot/gateway-irc
+          images: name/app
           tags: |
             type=edge
             type=ref,event=branch
