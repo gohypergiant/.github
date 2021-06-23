@@ -1,7 +1,14 @@
-name: "Build Docker Image"
+name: Docker Build and Push
 
 on:
+  push:
+    branches:
+      - 'main'
+    tags:
+      - '*.*.*'
   pull_request:
+    branches:
+      - 'main'
 jobs:
   docker:
     runs-on: ubuntu-latest
@@ -34,8 +41,21 @@ jobs:
             type=sha,prefix=sha-,suffix=-${{env.NOW}},format=short
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
+      - 
+        name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        if: github.event_name != 'pull_request'
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - 
+        name: Login to ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+        if: github.event_name != 'pull_request'
       -
-        name: Build docker image
+        name: Docker Build and Push
         env:
           DOCKER_FILENAME: ui.Dockerfile
         id: docker_build
@@ -43,5 +63,10 @@ jobs:
         with:
           context: .
           file: docker/${{ env.DOCKER_FILENAME }}
+          push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          labels: ${{ steps.meta.outputs.labels }}    
+      - 
+        name: Logout of Amazon ECR
+        if: always()
+        run: docker logout ${{ steps.login-ecr.outputs.registry }}
