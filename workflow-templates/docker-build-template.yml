@@ -3,12 +3,12 @@ name: Docker Build and Push
 on:
   push:
     branches:
-      - 'main'
+      - 'stable'
     tags:
       - '*.*.*'
   pull_request:
     branches:
-      - 'main'
+      - 'stable'
 jobs:
   docker:
     runs-on: ubuntu-latest
