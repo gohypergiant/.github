@@ -1,0 +1,27 @@
+name: CloudDefense Scan for Docker Images
+
+on:
+ pull_request:
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Build image
+        run: |
+          docker build -t latest -f docker/ui.Dockerfile .
+      - name: List images
+        run: |
+          docker images
+      - name: Install Cloud Defense
+        run: |
+          curl https://raw.githubusercontent.com/CloudDefenseAI/cd/master/latest/cd-latest-linux-x64.tar.gz > /tmp/cd-latest-linux-x64.tar.gz
+          tar -C /tmp -xzf /tmp/cd-latest-linux-x64.tar.gz
+          chmod +x /tmp/cdefense
+      - name: Run Cloud Defense Scan
+        run: /tmp/cdefense container --api-key=${{ secrets.CLOUDDEFENSE_API_TOKEN }} --image-name=latest --project-name=$GITHUB_REPOSITORY
