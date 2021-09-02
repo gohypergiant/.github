@@ -1,0 +1,105 @@
+name: Build dockerimage and package helmchart, push to ECR
+
+on:
+  push:
+    branches:
+      - 'stable'
+    tags:
+      - '*.*.*'
+  pull_request:
+    branches:
+      - 'stable'
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Set current epoch time as env variable
+        run: echo "NOW=$(date +%s)" >> $GITHUB_ENV
+      -
+        name: Echo current date
+        run: echo $NOW
+      -
+        name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: name/app
+          tags: |
+            type=edge
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha,prefix=sha-,suffix=-${{env.NOW}},format=short
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+      - 
+        name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        if: github.event_name != 'pull_request'
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - 
+        name: Login to ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+        if: github.event_name != 'pull_request'
+      -
+        name: Docker Build and Push
+        env:
+          DOCKER_FILENAME: Dockerfile
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: docker/${{ env.DOCKER_FILENAME }}
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}   
+      -
+        name: Install helm chart and plugin
+        run: |
+          curl https://baltocdn.com/helm/signing.asc | sudo apt-key add -
+          sudo apt-get install apt-transport-https --yes
+          echo "deb https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
+          sudo apt-get update
+          sudo apt-get install helm
+          helm plugin install "https://github.com/sstarcher/helm-release"
+      -
+       name: Bump up chart version
+       run: |
+          helm release chart --skip-application-version
+          cat chart/Chart.yaml
+      -
+        name: Update vaules.yml with dockerimage
+        run: |
+           sed -i "s/^  image_name:.*$/  image_name: ${{ steps.meta.outputs.tags }}/" chart/values.yaml
+           cat chart/values.yaml
+      -
+        name: package helm chart
+        run: |
+           helm package chart
+           export chartVersion=$(helm release chart --print-computed-version)
+           export helmpackage=${{ github.event.repository.name }}-$chartVersion
+      -
+        name: push helm package
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+          IMAGE_TAG: $helmpackage
+        run: |
+          helm chart push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+      - 
+        name: Logout of Amazon ECR
+        if: always()
+        run: docker logout ${{ steps.login-ecr.outputs.registry }}
