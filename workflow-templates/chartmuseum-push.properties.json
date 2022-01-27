@@ -1,0 +1,11 @@
+{
+    "name": "ChartMuseum Push",
+    "description": "Push a chart to a chartmuseum repository",
+    "iconName": "helm",
+    "categories": [
+        "HelmCharts"
+    ],
+    "filePatterns": [
+        ".*\\.yaml$"
+    ]
+}
