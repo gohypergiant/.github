@@ -1,4 +1,4 @@
-name: Build dockerimage and package helmchart, push to ECR
+name: Push chart to harbor chartmuseum
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
     tags:
       - "*.*.*"
 jobs:
-  docker:
+  chartmuseum-push:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -17,25 +17,16 @@ jobs:
         uses: azure/setup-helm@v1
         with:
           version: v3.4.0
-      - name: Set current epoch time as env variable
-        run: echo "NOW=$(date +%s)" >> $GITHUB_ENV
-      - name: Echo current date
-        run: echo $NOW
       - name: Install chart museum push extension
         run: helm plugin install https://github.com/chartmuseum/helm-push.git
-      - name: Bump up chart version
-        run: |
-          helm release chart --skip-application-version
-          cat chart/Chart.yaml
       - name: package helm chart
         run: |
           helm package chart
-          export chartVersion=$(helm release chart --print-computed-version)
-          export helmpackage=${{ github.event.repository.name }}-$chartVersion
       - name: push helm package
         env:
-          CHARTMUSEUM_URL: ${{ secrets.CHARTMUSEUM_URL }}
+          HARBOR_BASEURL: ${{ secrets.HARBOR_BASEURL }} 
+          HARBOR_PROJECT: ${{ secrets.HARBOR_PROJECT }}
           CHARTMUSEUM_USER: ${{ secrets.CHARTMUSEUM_USER }}
           CHARTMUSEUM_PASSWORD: ${{ secrets.CHARTMUSEUM_PASSWORD }}
         run: |
-          helm cm-push chart $CHARTMUSEUM_URL -u $CHARTMUSEUM_USER -p $CHARTMUSEUM_PASSWORD
+          helm cm-push chart $HARBOR_BASEURL/chartrepo/$HARBOR_PROJECT -u $CHARTMUSEUM_USER -p $CHARTMUSEUM_PASSWORD 
