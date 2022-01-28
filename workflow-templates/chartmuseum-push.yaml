@@ -1,0 +1,32 @@
+name: Push chart to harbor chartmuseum
+
+on:
+  push:
+    branches:
+      - "stable"
+      - "main"
+    tags:
+      - "*.*.*"
+jobs:
+  chartmuseum-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up Helm
+        uses: azure/setup-helm@v1
+        with:
+          version: v3.4.0
+      - name: Install chart museum push extension
+        run: helm plugin install https://github.com/chartmuseum/helm-push.git
+      - name: package helm chart
+        run: |
+          helm package chart
+      - name: push helm package
+        env:
+          HARBOR_BASEURL: ${{ secrets.HARBOR_BASEURL }} 
+          HARBOR_PROJECT: ${{ secrets.HARBOR_PROJECT }}
+          CHARTMUSEUM_USER: ${{ secrets.CHARTMUSEUM_USER }}
+          CHARTMUSEUM_PASSWORD: ${{ secrets.CHARTMUSEUM_PASSWORD }}
+        run: |
+          helm cm-push chart $HARBOR_BASEURL/chartrepo/$HARBOR_PROJECT -u $CHARTMUSEUM_USER -p $CHARTMUSEUM_PASSWORD 
