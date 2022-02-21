@@ -6,6 +6,6 @@
         "HelmCharts"
     ],
     "filePatterns": [
-        ".*\\.yaml$"
+        ".*\\Chart.yaml$"
     ]
 }
