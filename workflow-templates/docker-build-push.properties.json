@@ -1,0 +1,10 @@
+{
+    "name": "Docker Build and Push",
+    "description": "Basic template for building and pushing to GHCR",
+    "categories": [
+        "Go"
+    ],
+    "filePatterns": [
+        "Dockerfile"
+    ]
+}
