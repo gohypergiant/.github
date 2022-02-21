@@ -1,4 +1,4 @@
-name: Hypergiant Security Scans
+name: Hypergiant Golang CI workflow
 
 on:
   push:
@@ -6,6 +6,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      GO111MODULE: on
 
     steps:
       - 
@@ -15,4 +17,10 @@ jobs:
       - 
         name: Secret Scan
         uses: gohypergiant/secret-scan@04dbad7694a0b9582cb6864f98349f728582d7ea
+
+      -
+        name: gosec
+        uses: securego/gosec@master
+        with:
+          args: ./...
 

@@ -1,0 +1,10 @@
+{
+    "name": "Golang CI flow",
+    "description": "Hypergiant Golang CI Workflow Template",
+    "categories": [
+        "Go"
+    ],
+    "filePatterns": [
+        "*\\.go$"
+    ]
+}
