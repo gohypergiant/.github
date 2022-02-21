@@ -1,8 +1,0 @@
-{
-    "name": "Cloud Defense DockerImageScan",
-    "description": "Cloud Defense Scan for Docker Image",
-    "iconName": "cloud-defense",
-    "categories": [
-        "Docker Image"
-    ]
-}
