@@ -5,4 +5,4 @@ on:
 
 jobs:
   golang-ci:
-    uses: gohypergiant/.github/workflows/golang-ci.yml
+    uses: gohypergiant/.github/.github/workflows/golang-ci.yml
