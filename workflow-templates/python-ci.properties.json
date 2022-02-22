@@ -1,0 +1,11 @@
+{
+    "name": "Python CI flow",
+    "description": "Hypergiant Python CI Workflow Template",
+    "categories": [
+        "Python"
+    ],
+    "filePatterns": [
+        "*\\.py$"
+        "*\\.pyc$"
+    ]
+}
