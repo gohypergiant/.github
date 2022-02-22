@@ -4,7 +4,7 @@ on:
   push:
 
 jobs:
-  build:
+  secret-scan:
     runs-on: ubuntu-latest
     env:
       GO111MODULE: on
@@ -18,9 +18,59 @@ jobs:
         name: Secret Scan
         uses: gohypergiant/secret-scan@04dbad7694a0b9582cb6864f98349f728582d7ea
 
+  gosec:
+    runs-on: ubuntu-latest
+    env:
+      GO111MODULE: on
+
+    steps:
+      - 
+        name: Checkout
+        uses: actions/checkout@v2
+
+      - 
+        name: Setup Go environment
+        uses: actions/setup-go@v2.2.0
+
       -
         name: gosec
         uses: securego/gosec@master
         with:
           args: ./...
 
+  lint:
+    runs-on: ubuntu-latest
+    env:
+      GO111MODULE: on
+
+    steps:
+      - 
+        name: Checkout
+        uses: actions/checkout@v2
+
+      - 
+        name: Setup Go environment
+        uses: actions/setup-go@v2.2.0
+
+      - 
+        name: golangci-lint
+        uses: golangci/golangci-lint-action@v2
+        with:
+          # Optional: version of golangci-lint to use in form of v1.2 or v1.2.3 or `latest` to use the latest version
+          version: v1.29
+          skip-go-installation: true
+          skip-pkg-cache: false
+          skip-build-cache: false
+
+  test:
+      - 
+        name: Checkout
+        uses: actions/checkout@v2
+
+      - 
+        name: Setup Go environment
+        uses: actions/setup-go@v2.2.0
+
+      -
+        name: Run unit tests
+        run: go test  ./...
