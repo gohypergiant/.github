@@ -4,8 +4,4 @@
     "categories": [
         "Python"
     ],
-    "filePatterns": [
-        "*\\.py$"
-        "*\\.pyc$"
-    ]
 }
