@@ -54,13 +54,11 @@ jobs:
 
       -
         name: golangci-lint
-        uses: golangci/golangci-lint-action@v2
+        uses: reviewdog/action-golangci-lint@v2
         with:
-          # Optional: version of golangci-lint to use in form of v1.2 or v1.2.3 or `latest` to use the latest version
-          version: v1.29
-          skip-go-installation: true
-          skip-pkg-cache: false
-          skip-build-cache: false
+          reporter: github-pr-review
+          fail_on_error: true
+          level: info
 
   test:
     runs-on: ubuntu-latest
