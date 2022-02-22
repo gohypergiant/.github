@@ -34,7 +34,7 @@ jobs:
 
       -
         name: gosec
-        uses: securego/gosec@v2
+        uses: securego/gosec@v2.9.6
         with:
           args: ./...
 
