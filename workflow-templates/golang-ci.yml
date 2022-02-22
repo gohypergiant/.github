@@ -16,7 +16,7 @@ jobs:
 
       -
         name: Secret Scan
-        uses: gohypergiant/secret-scan@04dbad7694a0b9582cb6864f98349f728582d7ea
+        uses: gohypergiant/secret-scan@master
 
   gosec:
     runs-on: ubuntu-latest
