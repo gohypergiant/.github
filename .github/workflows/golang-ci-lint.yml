@@ -1,0 +1,42 @@
+name: Golang-CI Lint
+
+on:
+  workflow_call:
+    inputs:
+      fail_on_error:
+        description: 'Option to fail the build on Golang-CI lint errors'
+        required: false
+        type: boolean
+        default: true
+      reporter:
+        required: false
+        type: string
+        default: github-pr-review
+      level:
+        required: false
+        type: string
+        default: info
+
+  lint:
+    runs-on: ubuntu-latest
+    env:
+      GO111MODULE: on
+
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+
+      -
+        name: Setup Go environment
+        uses: actions/setup-go@v2.2.0
+        with:
+          go-version: ${{inputs.go-version}}
+
+      -
+        name: golangci-lint
+        uses: reviewdog/action-golangci-lint@v2
+        with:
+          reporter: ${{ inputs.reporter }}
+          fail_on_error: ${{ inputs.fail_on_error }}
+          level: ${{ inputs.level }}

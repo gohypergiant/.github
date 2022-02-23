@@ -1,0 +1,30 @@
+name: Gosec Scan
+
+on:
+  workflow_call:
+    inputs:
+      go-version:
+        required: true
+        type: string
+
+  gosec:
+    runs-on: ubuntu-latest
+    env:
+      GO111MODULE: on
+
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+
+      -
+        name: Setup Go environment
+        uses: actions/setup-go@v2.2.0
+        with:
+          go-version: ${{inputs.go-version}}
+
+      -
+        name: gosec
+        uses: securego/gosec@v2.9.6
+        with:
+          args: ./...

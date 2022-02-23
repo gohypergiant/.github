@@ -4,7 +4,22 @@ on:
   push:
 
 jobs:
-  golang-ci:
-    uses: gohypergiant/.github/.github/workflows/golang-ci.yml
+  secret-scan:
+    uses: gohypergiant/.github/.github/workflows/secret-scan.yml
+
+  gosec:
+    uses: gohypergiant/.github/.github/workflows/gosec-scan.yml
+    with:
+      go-version: 1.17
+
+  golang-ci-lint:
+    uses: gohypergiant/.github/.github/workflows/golang-ci-lint.yml
+    with:
+      level: info
+      fail_on_error: true
+      reporter: github-pr-review
+
+  go-test:
+    uses: gohypergiant/.github/.github/workflows/go-test.yml
     with:
       go-version: 1.17
