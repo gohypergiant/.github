@@ -17,6 +17,7 @@ on:
         type: string
         default: info
 
+jobs:
   lint:
     runs-on: ubuntu-latest
     env:
