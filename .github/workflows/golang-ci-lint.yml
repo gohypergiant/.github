@@ -16,6 +16,11 @@ on:
         required: false
         type: string
         default: info
+      workdir:
+        description: 'Working directory (relative to repo root)'
+        required: false
+        type: string
+        default: "./"
 
 jobs:
   lint:
