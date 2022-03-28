@@ -6,6 +6,11 @@ on:
       go-version:
         required: true
         type: string
+      args:
+        required: false
+        default: './...'
+        type: string
+
 
 jobs:
   gosec:
