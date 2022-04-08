@@ -1,4 +1,4 @@
-name: Lint check
+name: Lint checks
 on: push
 jobs:
   test:
@@ -8,7 +8,9 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: "14.x"
-      - name: Install eslint
-        run: npm i eslint
+      - name: Install eslint and stylelint
+        run: npm i eslint stylelint
       - name: Run eslint
-        run: npm run lint
+        run: 
+      - name: Run stylelint
+        run: stylelint "./src/**/*.{js,jsx,ts,tsx,css,sass,scss}"
