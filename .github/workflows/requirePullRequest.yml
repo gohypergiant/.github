@@ -5,7 +5,9 @@ name: require pull request
 on:
   pull_request:
     branches:
+      - main
       - master
+      - stable
       - develop
 
 jobs:
