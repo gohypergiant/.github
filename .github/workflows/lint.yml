@@ -1,0 +1,16 @@
+name: Lint checks
+on: push
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "14.x"
+      - name: Install eslint and stylelint
+        run: npm i eslint stylelint
+      - name: Run eslint
+        run: eslint "./src/**/*.{js,jsx,ts,tsx}"
+      - name: Run stylelint
+        run: stylelint "./src/**/*.{js,jsx,ts,tsx,css,sass,scss}"
