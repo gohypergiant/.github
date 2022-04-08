@@ -11,6 +11,6 @@ jobs:
       - name: Install eslint and stylelint
         run: npm i eslint stylelint
       - name: Run eslint
-        run: 
+        run: eslint "./src/**/*.{js,jsx,ts,tsx}"
       - name: Run stylelint
         run: stylelint "./src/**/*.{js,jsx,ts,tsx,css,sass,scss}"
